@@ -1,3 +1,12 @@
+CONTAINER_NAME=php
+
+# OS ごとに script を使い分ける
+ifeq ($(shell uname -s),Darwin)
+	PINT_SCRIPT = script /dev/null docker compose exec $(CONTAINER_NAME) ./vendor/bin/pint
+else
+	PINT_SCRIPT = script -q -c "docker compose exec $(CONTAINER_NAME) ./vendor/bin/pint" /dev/null
+endif
+
 build-xdebug:
 	docker build -t xdebug-builder ./docker-containers/build-xdebug
 	docker run --rm \
@@ -14,3 +23,12 @@ up: build-xdebug
 	fi
 
 	docker compose up -d
+
+test:
+	docker compose exec $(CONTAINER_NAME) ./vendor/bin/pest --colors=always $(foreach path,$(filter-out $@,$(MAKECMDGOALS)),$(subst code/,,$(path)))
+
+pest:
+	docker compose exec $(CONTAINER_NAME) ./vendor/bin/pest --colors=always $(foreach path,$(filter-out $@,$(MAKECMDGOALS)),$(subst code/,,$(path)))
+
+pint:
+	$(PINT_SCRIPT) $(foreach path,$(filter-out $@,$(MAKECMDGOALS)),$(subst code/,,$(path)))
