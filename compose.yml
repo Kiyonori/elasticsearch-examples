@@ -12,6 +12,50 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  mysql:
+    build:
+      context: ./docker-containers/mysql
+      args:
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    restart: unless-stopped
+    ports:
+      - ${MYSQL_OUTWARD_PORT}:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_520_ci
+    networks:
+      - elasticsearch-example-network-123123
+
+  testing-mysql:
+    build:
+      context: ./docker-containers/mysql
+      args:
+        MYSQL_USER: ${TESTING_MYSQL_USER}
+        MYSQL_PASSWORD: ${TESTING_MYSQL_PASSWORD}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${TESTING_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${TESTING_MYSQL_DATABASE}
+      MYSQL_USER: ${TESTING_MYSQL_USER}
+      MYSQL_PASSWORD: ${TESTING_MYSQL_PASSWORD}
+    restart: unless-stopped
+    ports:
+      - ${TESTING_MYSQL_OUTWARD_PORT}:3306
+    volumes:
+      - testing-mysql-data:/var/lib/mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_520_ci
+    networks:
+      - elasticsearch-example-network-123123
+
 networks:
   elasticsearch-example-network-123123:
     driver: bridge
+
+volumes:
+  mysql-data:
+  testing-mysql-data:
