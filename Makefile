@@ -22,7 +22,29 @@ up: build-xdebug
 		echo ".env already exists"; \
 	fi
 
+	@if [ ! -f ./code/.env ]; then \
+		echo "Copying ./code/.env.example to ./code/.env"; \
+		cp ./code/.env.example ./code/.env; \
+	else \
+		echo "./code/.env already exists"; \
+	fi
+
+	@if [ ! -f ./code/.env.testing ]; then \
+		echo "Copying ./code/.env.testing.example to ./code/.env.testing"; \
+		cp ./code/.env.testing.example ./code/.env.testing; \
+	else \
+		echo "./code/.env.testing already exists"; \
+	fi
+
+	docker compose build
 	docker compose up -d
+
+	echo "Installing Composer dependencies..."
+	docker compose exec $(CONTAINER_NAME) composer install
+
+	echo "Generating Laravel app key..."
+	docker compose exec $(CONTAINER_NAME) php artisan key:generate
+	docker compose exec $(CONTAINER_NAME) php artisan key:generate --env=testing
 
 test:
 	docker compose exec $(CONTAINER_NAME) ./vendor/bin/pest --colors=always $(foreach path,$(filter-out $@,$(MAKECMDGOALS)),$(subst code/,,$(path)))
