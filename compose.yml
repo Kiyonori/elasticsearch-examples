@@ -1,0 +1,17 @@
+services:
+  php:
+    build:
+      context: ./docker-containers/php
+      args:
+        APP_USER_ID: ${APP_USER_ID}
+    volumes:
+      - ./code:/var/www/code
+    networks:
+      - elasticsearch-example-network-123123
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  elasticsearch-example-network-123123:
+    driver: bridge
