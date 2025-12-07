@@ -24,21 +24,17 @@ final readonly class SearchMessageByElasticsearchAction
         int $receiverUserId,
     ) {
         $result = Body::query(
-            function (BoolQuery $bool) use ($dateRange, $receiverUserId, $senderUserId, $messageKeyword) {
-                $bool(
-                    function (MustQuery $must) use ($dateRange, $receiverUserId, $senderUserId, $messageKeyword) {
-                        $must
-                            ->match('message', $messageKeyword)
-                            ->term('sender_user_id', $senderUserId)
-                            ->term('receiver_user_id', $receiverUserId)
-                            ->range(
-                                fieldName: 'created_at',
-                                gte: $dateRange->start->format('Y-m-d H:i:s'),
-                                lte: $dateRange->end->format('Y-m-d H:i:s'),
-                            );
-                    }
-                );
-            }
+            fn (BoolQuery $bool) => $bool(
+                fn (MustQuery $must) => $must
+                    ->match('message', $messageKeyword)
+                    ->term('sender_user_id', $senderUserId)
+                    ->term('receiver_user_id', $receiverUserId)
+                    ->range(
+                        fieldName: 'created_at',
+                        gte: $dateRange->start->format('Y-m-d H:i:s'),
+                        lte: $dateRange->end->format('Y-m-d H:i:s'),
+                    ),
+            ),
         )->toArray();
     }
 }
