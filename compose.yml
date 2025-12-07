@@ -1,0 +1,107 @@
+services:
+  php:
+    build:
+      context: ./docker-containers/php
+      args:
+        APP_USER_ID: ${APP_USER_ID}
+    volumes:
+      - ./code:/var/www/code
+    networks:
+      - elasticsearch-example-network-123123
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  nginx:
+    build:
+      context: ./docker-containers/nginx
+    ports:
+      - ${NGINX_OUTWARD_PORT}:80
+    volumes:
+      - ./code:/var/www/code
+      - ./docker-containers/nginx/mount/etc/nginx/conf.d/my.conf:/etc/nginx/conf.d/my.conf:ro
+    depends_on:
+      - php
+    networks:
+      - elasticsearch-example-network-123123
+    restart: unless-stopped
+
+  mysql:
+    build:
+      context: ./docker-containers/mysql
+      args:
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    restart: unless-stopped
+    ports:
+      - ${MYSQL_OUTWARD_PORT}:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_520_ci
+    networks:
+      - elasticsearch-example-network-123123
+
+  testing-mysql:
+    build:
+      context: ./docker-containers/mysql
+      args:
+        MYSQL_USER: ${TESTING_MYSQL_USER}
+        MYSQL_PASSWORD: ${TESTING_MYSQL_PASSWORD}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${TESTING_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${TESTING_MYSQL_DATABASE}
+      MYSQL_USER: ${TESTING_MYSQL_USER}
+      MYSQL_PASSWORD: ${TESTING_MYSQL_PASSWORD}
+    restart: unless-stopped
+    ports:
+      - ${TESTING_MYSQL_OUTWARD_PORT}:3306
+    volumes:
+      - testing-mysql-data:/var/lib/mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_520_ci
+    networks:
+      - elasticsearch-example-network-123123
+
+  elasticsearch:
+    build:
+      context: docker-containers/elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - ${ELASTICSEARCH_OUTWARD_PORT}:9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - elasticsearch-example-network-123123
+    restart: unless-stopped
+
+  testing-elasticsearch:
+    build:
+      context: docker-containers/elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - ${TESTING_ELASTICSEARCH_OUTWARD_PORT}:9200
+    volumes:
+      - testing-elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - elasticsearch-example-network-123123
+    restart: unless-stopped
+
+networks:
+  elasticsearch-example-network-123123:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  testing-mysql-data:
+  elasticsearch-data:
+  testing-elasticsearch-data:
