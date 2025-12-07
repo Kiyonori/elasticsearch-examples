@@ -1,0 +1,34 @@
+{
+    "index": "messages",
+    "body": {
+        "mappings": {
+            "properties": {
+                "id": {
+                    "type": "long"
+                },
+                "sender_user_id": {
+                    "type": "long"
+                },
+                "receiver_user_id": {
+                    "type": "long"
+                },
+                "message": {
+                    "type": "text",
+                    "analyzer": "kuromoji"
+                },
+                "read_at": {
+                    "type": "date"
+                },
+                "created_at": {
+                    "type": "date"
+                },
+                "updated_at": {
+                    "type": "date"
+                },
+                "deleted_at": {
+                    "type": "date"
+                }
+            }
+        }
+    }
+}
