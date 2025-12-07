@@ -16,16 +16,17 @@ class Message extends Model
         'sender_user_id',
         'receiver_user_id',
         'message',
+        'read_at',
         'created_at',
         'updated_at',
     ];
 
-    public function senderUser(): BelongsTo
+    public function sender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sender_user_id');
     }
 
-    public function receiverUser(): BelongsTo
+    public function receiver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'receiver_user_id');
     }
