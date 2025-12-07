@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f5ac122bf9880a5d773e263e090fd7d3",
+    "content-hash": "18a479cc7e908f0881e5d983bee8e5bb",
     "packages": [
         {
             "name": "brick/math",
@@ -1169,16 +1169,16 @@
         },
         {
             "name": "kiyonori/elasticsearch-fluent-query-builder",
-            "version": "v0.9.1",
+            "version": "v0.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kiyonori/elasticsearch-fluent-query-builder.git",
-                "reference": "42655544145038e334b6551f19bf2c1c16c1c923"
+                "reference": "8cb8990846a92388ee00f6fb8e345544d311d7ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kiyonori/elasticsearch-fluent-query-builder/zipball/42655544145038e334b6551f19bf2c1c16c1c923",
-                "reference": "42655544145038e334b6551f19bf2c1c16c1c923",
+                "url": "https://api.github.com/repos/Kiyonori/elasticsearch-fluent-query-builder/zipball/8cb8990846a92388ee00f6fb8e345544d311d7ff",
+                "reference": "8cb8990846a92388ee00f6fb8e345544d311d7ff",
                 "shasum": ""
             },
             "require": {
@@ -1192,6 +1192,13 @@
                 "pestphp/pest": "^3.8"
             },
             "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Kiyonori\\ElasticsearchFluentQueryBuilder\\ElasticsearchServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "files": [
                     "src/bootstrap.php"
@@ -1221,7 +1228,7 @@
                 "issues": "https://github.com/Kiyonori/elasticsearch-fluent-query-builder/issues",
                 "source": "https://github.com/Kiyonori/elasticsearch-fluent-query-builder"
             },
-            "time": "2025-12-07T06:35:23+00:00"
+            "time": "2025-12-07T07:09:34+00:00"
         },
         {
             "name": "laravel/framework",
