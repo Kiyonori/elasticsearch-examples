@@ -66,6 +66,36 @@ services:
     networks:
       - elasticsearch-example-network-123123
 
+  elasticsearch:
+    build:
+      context: docker-containers/elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - ${ELASTICSEARCH_OUTWARD_PORT}:9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - elasticsearch-example-network-123123
+    restart: unless-stopped
+
+  testing-elasticsearch:
+    build:
+      context: docker-containers/elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - ${TESTING_ELASTICSEARCH_OUTWARD_PORT}:9200
+    volumes:
+      - testing-elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - elasticsearch-example-network-123123
+    restart: unless-stopped
+
 networks:
   elasticsearch-example-network-123123:
     driver: bridge
@@ -73,3 +103,5 @@ networks:
 volumes:
   mysql-data:
   testing-mysql-data:
+  elasticsearch-data:
+  testing-elasticsearch-data:
