@@ -13,11 +13,36 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('last_name');
+            $table->string('last_kana_name');
+            $table->string('first_name');
+            $table->string('first_kana_name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+
+            $table
+                ->string(column: 'prefecture', length: 4)
+                ->comment('都道府県');
+
+            $table
+                ->string(column: 'city', length: 20)
+                ->comment('市区町村');
+
+            $table
+                ->string('street_address', 50)
+                ->comment('市区町村以降の住所');
+
+            $table
+                ->string('phone_number', 11)
+                ->comment('電話番号 ハイフンやカッコを含めない');
+
+            $table
+                ->string('memo')
+                ->nullable()
+                ->comment('メモ記入欄');
+
             $table->timestamps();
         });
 
