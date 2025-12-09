@@ -4,6 +4,8 @@ services:
       context: ./docker-containers/php
       args:
         APP_USER_ID: ${APP_USER_ID}
+    environment:
+      PHP_IDE_CONFIG: "serverName=php"
     volumes:
       - ./code:/var/www/code
     networks:
