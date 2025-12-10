@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MessageSeeder::class,
             BreedSeeder::class,
+            PetSeeder::class,
         ]);
     }
 }
