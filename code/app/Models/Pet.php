@@ -20,7 +20,7 @@ class Pet extends Model
     protected function casts(): array
     {
         return [
-            'birthdate' => 'date',
+            'birth_date' => 'date',
         ];
     }
 
