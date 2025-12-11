@@ -36,7 +36,7 @@ class IndexAllUsersCommand extends Command
 
                     foreach ($users as $user) {
                         /** @var User $user */
-                        $buffer = [
+                        $buffer[] = [
                             'id'              => $user->id,
                             'last_name'       => $user->last_name,
                             'last_kana_name'  => $user->last_kana_name,
