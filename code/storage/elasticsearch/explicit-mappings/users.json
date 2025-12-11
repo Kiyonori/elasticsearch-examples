@@ -1,0 +1,125 @@
+{
+    "index": "users",
+    "body": {
+        "mappings": {
+            "properties": {
+                "id": {
+                    "type": "long"
+                },
+                "last_name": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "last_kana_name": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "first_name": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "first_kana_name": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "email": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "prefecture": {
+                    "type": "keyword"
+                },
+                "city": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "street_address": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "phone_number": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        }
+                    }
+                },
+                "memo": {
+                    "type": "text",
+                    "analyzer": "kuromoji"
+                },
+                "created_at": {
+                    "type": "date"
+                },
+                "updated_at": {
+                    "type": "date"
+                },
+                "pets": {
+                    "type": "nested",
+                    "properties": {
+                        "id": {
+                            "type": "long"
+                        },
+                        "name": {
+                            "type": "keyword",
+                            "fields": {
+                                "text": {
+                                    "type": "text"
+                                }
+                            }
+                        },
+                        "birth_date": {
+                            "type": "date"
+                        },
+                        "breed_id": {
+                            "type": "long"
+                        },
+                        "created_at": {
+                            "type": "date"
+                        },
+                        "updated_at": {
+                            "type": "date"
+                        },
+                        "breed_name": {
+                            "type": "keyword",
+                            "fields": {
+                                "text": {
+                                    "type": "text"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
