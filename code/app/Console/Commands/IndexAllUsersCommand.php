@@ -46,7 +46,7 @@ class IndexAllUsersCommand extends Command
                             'prefecture'      => $user->prefecture,
                             'city'            => $user->city,
                             'street_address'  => $user->street_address,
-                            'phone_number'    => $user->street_address,
+                            'phone_number'    => $user->phone_number,
                             'memo'            => $user->memo,
                             'created_at'      => $user->created_at->toIso8601String(),
                             'updated_at'      => $user->updated_at->toIso8601String(),
