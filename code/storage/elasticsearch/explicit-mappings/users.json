@@ -12,6 +12,9 @@
                         "text": {
                             "type": "text",
                             "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
                         }
                     }
                 },
@@ -21,6 +24,9 @@
                         "text": {
                             "type": "text",
                             "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
                         }
                     }
                 },
@@ -30,6 +36,9 @@
                         "text": {
                             "type": "text",
                             "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
                         }
                     }
                 },
@@ -39,6 +48,9 @@
                         "text": {
                             "type": "text",
                             "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
                         }
                     }
                 },
@@ -47,6 +59,9 @@
                     "fields": {
                         "text": {
                             "type": "text"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
                         }
                     }
                 },
@@ -59,6 +74,9 @@
                         "text": {
                             "type": "text",
                             "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
                         }
                     }
                 },
@@ -68,6 +86,9 @@
                         "text": {
                             "type": "text",
                             "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
                         }
                     }
                 },
@@ -76,6 +97,9 @@
                     "fields": {
                         "text": {
                             "type": "text"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
                         }
                     }
                 },
@@ -101,6 +125,9 @@
                                 "text": {
                                     "type": "text",
                                     "analyzer": "kuromoji"
+                                },
+                                "wildcard": {
+                                    "type": "wildcard"
                                 }
                             }
                         },
@@ -122,6 +149,9 @@
                                 "text": {
                                     "type": "text",
                                     "analyzer": "kuromoji"
+                                },
+                                "wildcard": {
+                                    "type": "wildcard"
                                 }
                             }
                         }
