@@ -48,8 +48,8 @@ class IndexAllUsersCommand extends Command
                             'street_address'  => $user->street_address,
                             'phone_number'    => $user->street_address,
                             'memo'            => $user->memo,
-                            'created_at'      => $user->created_at->format('Y-m-d H:i:s'),
-                            'updated_at'      => $user->updated_at->format('Y-m-d H:i:s'),
+                            'created_at'      => $user->created_at->toIso8601String(),
+                            'updated_at'      => $user->updated_at->toIso8601String(),
                             'pets'            => (
                                 function () use ($user) {
                                     $pets = [];
@@ -60,8 +60,8 @@ class IndexAllUsersCommand extends Command
                                             'name'       => $pet->name,
                                             'birth_date' => $pet->birth_date->format('Y-m-d'),
                                             'breed_id'   => $pet->breed_id,
-                                            'created_at' => $pet->created_at->format('Y-m-d H:i:s'),
-                                            'updated_at' => $pet->updated_at->format('Y-m-d H:i:s'),
+                                            'created_at' => $pet->created_at->toIso8601String(),
+                                            'updated_at' => $pet->updated_at->toIso8601String(),
                                             'breed_name' => $pet->breed->name,
                                         ];
                                     }
