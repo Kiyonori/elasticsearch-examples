@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use Kiyonori\ElasticsearchFluentQueryBuilder\BulkStoreDocuments;
+use stdClass;
 
 class IndexAllUsersCommand extends Command
 {
@@ -36,47 +37,48 @@ class IndexAllUsersCommand extends Command
 
                     foreach ($users as $user) {
                         /** @var User $user */
-                        $buffer[] = [
-                            'id'              => $user->id,
-                            'last_name'       => $user->last_name,
-                            'last_kana_name'  => $user->last_kana_name,
-                            'first_name'      => $user->first_name,
-                            'first_kana_name' => $user->first_kana_name,
-                            'email'           => $user->email,
-                            'prefecture'      => $user->prefecture,
-                            'city'            => $user->city,
-                            'street_address'  => $user->street_address,
-                            'phone_number'    => $user->phone_number,
-                            'memo'            => $user->memo,
-                            'created_at'      => $user->created_at->toIso8601String(),
-                            'updated_at'      => $user->updated_at->toIso8601String(),
-                            'pets'            => (
-                                function () use ($user) {
-                                    $pets = [];
+                        $pets = $user->pets->isNotEmpty()
+                            ? $user->pets
+                            : [new stdClass];
 
-                                    foreach ($user->pets as $pet) {
-                                        $pets[] = [
-                                            'id'         => $pet->id,
-                                            'name'       => $pet->name,
-                                            'birth_date' => $pet->birth_date->format('Y-m-d'),
-                                            'breed_id'   => $pet->breed_id,
-                                            'created_at' => $pet->created_at->toIso8601String(),
-                                            'updated_at' => $pet->updated_at->toIso8601String(),
-                                            'breed_name' => $pet->breed->name,
-                                        ];
-                                    }
+                        foreach ($pets as $pet) {
+                            $buffer[] = [
+                                'composite_id' => sprintf(
+                                    '%d_%d',
+                                    $user->id,
+                                    $pet?->id ?? '',
+                                ),
 
-                                    return $pets;
-                                }
-                            )(),
-                        ];
+                                'user_id'              => $user->id,
+                                'user_last_name'       => $user->last_name,
+                                'user_last_kana_name'  => $user->last_kana_name,
+                                'user_first_name'      => $user->first_name,
+                                'user_first_kana_name' => $user->first_kana_name,
+                                'user_email'           => $user->email,
+                                'user_prefecture'      => $user->prefecture,
+                                'user_city'            => $user->city,
+                                'user_street_address'  => $user->street_address,
+                                'user_phone_number'    => $user->phone_number,
+                                'user_memo'            => $user->memo,
+                                'user_created_at'      => $user->created_at->toIso8601String(),
+                                'user_updated_at'      => $user->updated_at->toIso8601String(),
+
+                                'pet_id'         => ($pet instanceof stdClass) ? null : $pet->id,
+                                'pet_name'       => ($pet instanceof stdClass) ? null : $pet->name,
+                                'pet_breed'      => ($pet instanceof stdClass) ? null : $pet->breed?->breed,
+                                'pet_birth_date' => ($pet instanceof stdClass) ? null : $pet->birth_date?->format('Y-m-d'),
+                                'pets_count'     => ($pet instanceof stdClass) ? null : $pets->count(),
+                                'pet_created_at' => ($pet instanceof stdClass) ? null : $pet->created_at?->toIso8601String(),
+                                'pet_updated_at' => ($pet instanceof stdClass) ? null : $pet->updated_at?->toIso8601String(),
+                            ];
+                        }
                     }
 
                     app(BulkStoreDocuments::class)
                         ->execute(
                             indexName: 'users',
                             items: $buffer,
-                            idColumnName: 'id',
+                            idColumnName: 'composite_id',
                         );
 
                     $progress->advance(
