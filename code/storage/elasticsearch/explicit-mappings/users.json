@@ -1,74 +1,36 @@
 {
     "index": "users",
     "body": {
+        "settings": {
+            "index.max_ngram_diff": 2,
+            "analysis": {
+                "analyzer": {
+                    "jp_ngram": {
+                        "tokenizer": "jp_ngram_tokenizer"
+                    }
+                },
+                "tokenizer": {
+                    "jp_ngram_tokenizer": {
+                        "type": "ngram",
+                        "min_gram": 2,
+                        "max_gram": 4,
+                        "token_chars": [
+                            "letter"
+                        ]
+                    }
+                }
+            }
+        },
         "mappings": {
             "properties": {
-                "id": {
-                    "type": "long"
-                },
-                "last_name": {
-                    "type": "keyword",
-                    "fields": {
-                        "text": {
-                            "type": "text",
-                            "analyzer": "kuromoji"
-                        },
-                        "wildcard": {
-                            "type": "wildcard"
-                        }
-                    }
-                },
-                "last_kana_name": {
-                    "type": "keyword",
-                    "fields": {
-                        "text": {
-                            "type": "text",
-                            "analyzer": "kuromoji"
-                        },
-                        "wildcard": {
-                            "type": "wildcard"
-                        }
-                    }
-                },
-                "first_name": {
-                    "type": "keyword",
-                    "fields": {
-                        "text": {
-                            "type": "text",
-                            "analyzer": "kuromoji"
-                        },
-                        "wildcard": {
-                            "type": "wildcard"
-                        }
-                    }
-                },
-                "first_kana_name": {
-                    "type": "keyword",
-                    "fields": {
-                        "text": {
-                            "type": "text",
-                            "analyzer": "kuromoji"
-                        },
-                        "wildcard": {
-                            "type": "wildcard"
-                        }
-                    }
-                },
-                "email": {
-                    "type": "keyword",
-                    "fields": {
-                        "text": {
-                            "type": "text"
-                        },
-                        "wildcard": {
-                            "type": "wildcard"
-                        }
-                    }
-                },
-                "prefecture": {
+                "composite_id": {
                     "type": "keyword"
                 },
-                "city": {
+                
+                "user_id": {
+                    "type": "long"
+                },
+                "user_last_name": {
                     "type": "keyword",
                     "fields": {
                         "text": {
@@ -77,10 +39,14 @@
                         },
                         "wildcard": {
                             "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
                         }
                     }
                 },
-                "street_address": {
+                "user_last_kana_name": {
                     "type": "keyword",
                     "fields": {
                         "text": {
@@ -89,10 +55,46 @@
                         },
                         "wildcard": {
                             "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
                         }
                     }
                 },
-                "phone_number": {
+                "user_first_name": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text",
+                            "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
+                        }
+                    }
+                },
+                "user_first_kana_name": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text",
+                            "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
+                        }
+                    }
+                },
+                "user_email": {
                     "type": "keyword",
                     "fields": {
                         "text": {
@@ -100,62 +102,120 @@
                         },
                         "wildcard": {
                             "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
                         }
                     }
                 },
-                "memo": {
+                "user_prefecture": {
+                    "type": "keyword"
+                },
+                "user_city": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text",
+                            "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
+                        }
+                    }
+                },
+                "user_street_address": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text",
+                            "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
+                        }
+                    }
+                },
+                "user_phone_number": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
+                        }
+                    }
+                },
+                "user_memo": {
                     "type": "text",
                     "analyzer": "kuromoji"
                 },
-                "created_at": {
+                "user_created_at": {
                     "type": "date"
                 },
-                "updated_at": {
+                "user_updated_at": {
                     "type": "date"
                 },
-                "pets": {
-                    "type": "nested",
-                    "properties": {
-                        "id": {
-                            "type": "long"
+
+                "pet_id": {
+                    "type": "long"
+                },
+                "pet_name": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text",
+                            "analyzer": "kuromoji"
                         },
-                        "name": {
-                            "type": "keyword",
-                            "fields": {
-                                "text": {
-                                    "type": "text",
-                                    "analyzer": "kuromoji"
-                                },
-                                "wildcard": {
-                                    "type": "wildcard"
-                                }
-                            }
+                        "wildcard": {
+                            "type": "wildcard"
                         },
-                        "birth_date": {
-                            "type": "date"
-                        },
-                        "breed_id": {
-                            "type": "long"
-                        },
-                        "created_at": {
-                            "type": "date"
-                        },
-                        "updated_at": {
-                            "type": "date"
-                        },
-                        "breed_name": {
-                            "type": "keyword",
-                            "fields": {
-                                "text": {
-                                    "type": "text",
-                                    "analyzer": "kuromoji"
-                                },
-                                "wildcard": {
-                                    "type": "wildcard"
-                                }
-                            }
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
                         }
                     }
+                },
+                "pet_breed": {
+                    "type": "keyword",
+                    "fields": {
+                        "text": {
+                            "type": "text",
+                            "analyzer": "kuromoji"
+                        },
+                        "wildcard": {
+                            "type": "wildcard"
+                        },
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "jp_ngram"
+                        }
+                    }
+                },
+                "pet_birth_date": {
+                    "type": "date"
+                },
+                "pet_count": {
+                    "type": "integer"
+                },
+                "pet_created_at": {
+                    "type": "date"
+                },
+                "pet_updated_at": {
+                    "type": "date"
                 }
             }
         }
