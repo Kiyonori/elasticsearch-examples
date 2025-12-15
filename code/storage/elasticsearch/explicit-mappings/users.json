@@ -26,7 +26,7 @@
                 "composite_id": {
                     "type": "keyword"
                 },
-                
+    
                 "user_id": {
                     "type": "long"
                 },
@@ -208,7 +208,7 @@
                 "pet_birth_date": {
                     "type": "date"
                 },
-                "pet_count": {
+                "pets_count": {
                     "type": "integer"
                 },
                 "pet_created_at": {
