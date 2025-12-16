@@ -19,7 +19,7 @@ up: build-xdebug
 		echo "Copying .env.example to .env"; \
 		cp .env.example .env; \
 		sed -i.bak "s/^APP_USER_ID=.*/APP_USER_ID=$$(id -u)/" .env; \
-		rm -f .env.bak \
+		rm -f .env.bak; \
 	else \
 		echo ".env already exists"; \
 	fi
