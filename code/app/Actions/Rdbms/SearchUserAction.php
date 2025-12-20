@@ -5,6 +5,7 @@ namespace App\Actions\Rdbms;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final readonly class SearchUserAction
 {
@@ -45,6 +46,10 @@ final readonly class SearchUserAction
         return $query
             ->orderBy('id', 'desc')
             ->limit($size)
+            ->with([
+                'pets' => fn (HasMany $query) => $query
+                    ->orderBy('id', 'desc'),
+            ])
             ->get();
     }
 }
