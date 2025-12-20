@@ -2,7 +2,7 @@
 
 return [
     'hosts' => [
-        'http://elasticsearch:9200',
+        env('ELASTICSEARCH_HOST'),
     ],
     'ssl_verification' => false,
     'user_name'        => null,
