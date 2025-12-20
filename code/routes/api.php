@@ -1,8 +1,15 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Users;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::prefix('rdbms')->name('rdbms.')->group(
+    function () {
+        Route::prefix('users')->name('users.')->group(
+            function () {
+                    Route::get('', Users\Rdbms\IndexUsersController::class)
+                    ->name('index');
+            }
+        );
+    }
+);
