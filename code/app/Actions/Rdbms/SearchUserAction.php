@@ -3,6 +3,7 @@
 namespace App\Actions\Rdbms;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 final readonly class SearchUserAction
@@ -18,17 +19,11 @@ final readonly class SearchUserAction
         array $keywords,
         int $size,
     ): Collection {
-        $query = User::query()
-            ->join(
-                table: 'pets',
-                first: 'users.id',
-                operator: '=',
-                second: 'pets.user_id',
-            );
+        $query = User::query();
 
         foreach ($keywords as $keyword) {
             $query->where(
-                function ($query) use ($keyword) {
+                function (Builder $query) use ($keyword) {
                     $value = '%' . $keyword . '%';
 
                     $query
@@ -38,7 +33,11 @@ final readonly class SearchUserAction
                         ->orWhereLike('first_name', $value)
                         ->orWhereLike('last_kana_name', $value)
                         ->orWhereLike('first_kana_name', $value)
-                        ->orWhereLike('pets.name', $value);
+                        ->orWhereHas(
+                            'pets',
+                            fn (Builder $query) => $query
+                                ->whereLike('name', $value),
+                        );
                 }
             );
         }
