@@ -26,7 +26,8 @@ final readonly class SearchUserAction
     public function handle(
         array $keywords,
         int $size,
-        ?string $searchAfter = null,
+        ?int $searchAfterUserId = null,
+        ?int $searchAfterPetId = null,
     ): array {
         $query = Body::query(
             fn (BoolQuery $bool) => $bool(
@@ -55,12 +56,18 @@ final readonly class SearchUserAction
                 fieldName: 'user_id',
                 direction: 'desc',
             )
+            ->sort(
+                fieldName: 'pet_id',
+                direction: 'desc',
+            )
             ->size($size);
 
-        if ($searchAfter !== null) {
-            $query->searchAfter(
-                $searchAfter,
-            );
+        if ($searchAfterUserId !== null
+            && $searchAfterPetId !== null
+        ) {
+            $query
+                ->searchAfter($searchAfterUserId)
+                ->searchAfter($searchAfterPetId);
         }
 
         $client = app(PrepareElasticsearchClient::class)
