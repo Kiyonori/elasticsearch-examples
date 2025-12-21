@@ -52,5 +52,8 @@ test:
 pest:
 	docker compose exec $(CONTAINER_NAME) ./vendor/bin/pest --colors=always $(foreach path,$(filter-out $@,$(MAKECMDGOALS)),$(subst code/,,$(path)))
 
+pest-with-xdebug:
+	docker compose exec $(CONTAINER_NAME) bash -c "XDEBUG_MODE=debug ./vendor/bin/pest --colors=always $(foreach path,$(filter-out $@,$(MAKECMDGOALS)),$(subst code/,,$(path)))"
+
 pint:
 	$(PINT_SCRIPT) $(foreach path,$(filter-out $@,$(MAKECMDGOALS)),$(subst code/,,$(path)))
