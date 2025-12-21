@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Rdbms\Users\IndexUsersRequest;
 use App\Http\Resources\Rdbms\UserCollection;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Benchmark;
 
 class IndexUsersController extends Controller
 {
@@ -25,15 +27,25 @@ class IndexUsersController extends Controller
                 $request->validated('keywords'),
             );
 
-        $users = app(SearchUserAction::class)
-            ->handle(
-                keywords: $keywords,
-                size: (int) $request->validated('size'),
-                nextCursor: $request->validated('next_cursor'),
-            );
+        $users = Collection::empty();
+
+        /** 検索にかかった時間 */
+        $responseTime = Benchmark::measure(
+            function () use ($request, $keywords, &$users) {
+                $users = app(SearchUserAction::class)
+                    ->handle(
+                        keywords: $keywords,
+                        size: (int) $request->validated('size'),
+                        nextCursor: $request->validated('next_cursor'),
+                    );
+            }
+        );
 
         return response()->json(
-            UserCollection::make($users)
+            new UserCollection(
+                $users,
+                $responseTime,
+            )
         );
     }
 }
