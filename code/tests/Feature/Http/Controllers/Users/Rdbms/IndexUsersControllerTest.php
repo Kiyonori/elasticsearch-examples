@@ -100,6 +100,8 @@ test(
         expect($response)
             ->assertOk()
             ->assertJsonStructure([
+                'response_time',
+                'next_cursor',
                 'data' => [
                     '*' => [
                         'id',
@@ -108,9 +110,6 @@ test(
                         'first_name',
                         'first_kana_name',
                         'email',
-                        'email_verified_at',
-                        'password',
-                        'remember_token',
                         'prefecture',
                         'city',
                         'street_address',
@@ -131,7 +130,6 @@ test(
                         'updated_at',
                     ],
                 ],
-                'next_cursor',
             ]);
     }
 );
