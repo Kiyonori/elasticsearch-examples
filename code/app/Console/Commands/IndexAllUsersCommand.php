@@ -44,9 +44,9 @@ class IndexAllUsersCommand extends Command
                         foreach ($pets as $pet) {
                             $buffer[] = [
                                 'composite_id' => sprintf(
-                                    '%d_%d',
-                                    $user->id,
-                                    $pet?->id ?? '',
+                                    '%s_%s',
+                                    str_pad($user->id, length: 10, pad_string: '0', pad_type: STR_PAD_LEFT) ,
+                                    str_pad($pet?->id ?? 0, length: 10, pad_string: '0', pad_type: STR_PAD_LEFT) ,
                                 ),
 
                                 'user_id'              => $user->id,
