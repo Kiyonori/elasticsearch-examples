@@ -37,12 +37,20 @@ class IndexUserController extends Controller
             ->handle(
                 keywords: $keywords,
                 size: (int) $request->validated('size'),
+
+                searchAfterUserId: $request->filled('search_after_user_id')
+                    ? (int) $request->validated('search_after_user_id')
+                    : null,
+
+                searchAfterPetId: $request->filled('search_after_pet_id')
+                    ? (int) $request->validated('search_after_pet_id')
+                    : null,
             );
 
         $users = UserData::collect(
             Arr::get(
                 $elasticsearchResponse,
-                'hits.hits'
+                'hits.hits',
             ),
         );
 
