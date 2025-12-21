@@ -15,7 +15,7 @@ final readonly class ParseKeywordsAction
     ): array {
         $normalized = mb_trim(
             preg_replace(
-                pattern: '/[　\s\t\r\n]+/',
+                pattern: '/[　\s\t\r\n]+/u',
                 replacement: ' ',
                 subject: $keywords,
             )
