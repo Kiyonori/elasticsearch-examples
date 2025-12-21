@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 
 class MessageSeeder extends Seeder
 {
-    private const int COUNT = 100_000;
+    private const int COUNT = 10_000;
 
     private const int BUFFER_SIZE = 800;
 
