@@ -26,6 +26,7 @@ final readonly class SearchUserAction
     public function handle(
         array $keywords,
         int $size,
+        ?string $searchAfter = null,
     ): array {
         $query = Body::query(
             fn (BoolQuery $bool) => $bool(
@@ -54,15 +55,20 @@ final readonly class SearchUserAction
                 fieldName: 'user_id',
                 direction: 'desc',
             )
-            ->size($size)
-            ->toArray();
+            ->size($size);
+
+        if ($searchAfter !== null) {
+            $query->searchAfter(
+                $searchAfter,
+            );
+        }
 
         $client = app(PrepareElasticsearchClient::class)
             ->execute();
 
         $response = $client->search([
             'index' => 'users',
-            'body'  => $query['body'],
+            'body'  => $query->toArray()['body'],
         ]);
 
         return json_decode(
