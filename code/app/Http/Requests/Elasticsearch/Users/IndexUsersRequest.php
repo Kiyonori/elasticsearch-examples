@@ -29,9 +29,16 @@ class IndexUsersRequest extends FormRequest
                 'min:1',
             ],
 
-            'search_after' => [
+            'search_after_user_id' => [
                 'nullable',
-                'string',
+                'int',
+                'min:1',
+            ],
+
+            'search_after_pet_id' => [
+                'nullable',
+                'int',
+                'min:1',
             ],
         ];
     }
