@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Users;
+namespace App\Http\Requests\Rdbms\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * users を検索するときの検索条件のバリデーション
+ * RDBMS 内の users テーブルを検索するときの検索条件のバリデーション
  */
 class IndexUsersRequest extends FormRequest
 {
