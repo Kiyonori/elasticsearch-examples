@@ -6,7 +6,7 @@ use App\Actions\Elasticsearch\SearchUserAction;
 use App\Actions\ParseKeywordsAction;
 use App\Data\ElasticsearchResponses\Users\UserData;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Users\IndexUsersRequest;
+use App\Http\Requests\Elasticsearch\Users\IndexUsersRequest;
 use App\Http\Resources\Elasticsearch\UserCollection;
 use Elastic\Elasticsearch\Exception\AuthenticationException;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
