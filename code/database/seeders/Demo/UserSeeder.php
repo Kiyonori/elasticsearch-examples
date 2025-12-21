@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
-    private const int COUNT = 300_000;
+    private const int COUNT = 200_000;
 
     private const int BUFFER_SIZE = 800;
 

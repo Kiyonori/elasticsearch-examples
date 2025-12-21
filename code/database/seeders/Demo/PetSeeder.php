@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 
 class PetSeeder extends Seeder
 {
-    private const int COUNT = 3000;
+    private const int COUNT = 250_000;
 
     private const int BUFFER_SIZE = 800;
 

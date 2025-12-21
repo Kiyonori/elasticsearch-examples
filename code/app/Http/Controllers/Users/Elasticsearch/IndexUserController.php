@@ -14,6 +14,7 @@ use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Benchmark;
 
 class IndexUserController extends Controller
 {
@@ -33,19 +34,26 @@ class IndexUserController extends Controller
                 $request->validated('keywords'),
             );
 
-        $elasticsearchResponse = app(SearchUserAction::class)
-            ->handle(
-                keywords: $keywords,
-                size: (int) $request->validated('size'),
+        $elasticsearchResponse = null;
 
-                searchAfterUserId: $request->filled('search_after_user_id')
-                    ? (int) $request->validated('search_after_user_id')
-                    : null,
+        /** 検索にかかった時間 */
+        $responseTime = Benchmark::measure(
+            function () use ($request, $keywords, &$elasticsearchResponse) {
+                $elasticsearchResponse = app(SearchUserAction::class)
+                    ->handle(
+                        keywords: $keywords,
+                        size: (int) $request->validated('size'),
 
-                searchAfterPetId: $request->filled('search_after_pet_id')
-                    ? (int) $request->validated('search_after_pet_id')
-                    : null,
-            );
+                        searchAfterUserId: $request->filled('search_after_user_id')
+                            ? (int) $request->validated('search_after_user_id')
+                            : null,
+
+                        searchAfterPetId: $request->filled('search_after_pet_id')
+                            ? (int) $request->validated('search_after_pet_id')
+                            : null,
+                    );
+            }
+        );
 
         $users = UserData::collect(
             Arr::get(
@@ -55,8 +63,14 @@ class IndexUserController extends Controller
         );
 
         return response()->json(
-            UserCollection::make(
+            new UserCollection(
                 $users,
+                $responseTime,
+                hits_total: Arr::get(
+                    array: $elasticsearchResponse,
+                    key: 'hits.total.value',
+                    default: 0,
+                ),
             ),
         );
     }
