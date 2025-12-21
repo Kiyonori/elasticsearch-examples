@@ -99,7 +99,39 @@ test(
 
         expect($response)
             ->assertOk()
-            ->and($response)
-            ->assertJsonCount(3);
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'last_name',
+                        'last_kana_name',
+                        'first_name',
+                        'first_kana_name',
+                        'email',
+                        'email_verified_at',
+                        'password',
+                        'remember_token',
+                        'prefecture',
+                        'city',
+                        'street_address',
+                        'phone_number',
+                        'memo',
+                        'pets' => [
+                            '*' => [
+                                'id',
+                                'user_id',
+                                'name',
+                                'birth_date',
+                                'breed_id',
+                                'created_at',
+                                'updated_at',
+                            ],
+                        ],
+                        'created_at',
+                        'updated_at',
+                    ],
+                ],
+                'next_cursor',
+            ]);
     }
 );
