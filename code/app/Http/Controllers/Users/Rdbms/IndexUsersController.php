@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Users\Rdbms;
 use App\Actions\ParseKeywordsAction;
 use App\Actions\Rdbms\SearchUserAction;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Users\IndexUsersRequest;
+use App\Http\Requests\Rdbms\Users\IndexUsersRequest;
 use App\Http\Resources\Rdbms\UserCollection;
 use Exception;
 use Illuminate\Http\JsonResponse;
