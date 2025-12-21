@@ -173,6 +173,8 @@ test(
                         ],
                     ],
                 ],
+                'search_after_user_id',
+                'search_after_pet_id',
             ]);
     }
 );
