@@ -48,6 +48,13 @@ up: build-xdebug
 	docker compose exec $(CONTAINER_NAME) php artisan key:generate
 	docker compose exec $(CONTAINER_NAME) php artisan key:generate --env=testing
 
+demo:
+	echo "デモ用のデータベースレコードと Elasticsearch に索引を作ります"
+	docker compose exec $(CONTAINER_NAME) php artisan migrate:fresh
+	docker compose exec $(CONTAINER_NAME) php artisan db:seed --class=Database\\Seeders\\Demo\\DatabaseSeeder
+	docker compose exec $(CONTAINER_NAME) php artisan elasticsearch:user-mapping
+	docker compose exec $(CONTAINER_NAME) php artisan elasticsearch:index-all-users
+
 test:
 	docker compose exec $(CONTAINER_NAME) ./vendor/bin/pest --colors=always $(foreach path,$(filter-out $@,$(MAKECMDGOALS)),$(subst code/,,$(path)))
 
