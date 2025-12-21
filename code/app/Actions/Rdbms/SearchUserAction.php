@@ -3,8 +3,8 @@
 namespace App\Actions\Rdbms;
 
 use App\Models\User;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final readonly class SearchUserAction
@@ -14,12 +14,12 @@ final readonly class SearchUserAction
      *
      * @param  array<int, string>  $keywords  例 ['山田', '太郎']
      * @param  int  $size  1ページあたりの件数
-     * @return Collection<int, User>
      */
     public function handle(
         array $keywords,
         int $size,
-    ): Collection {
+        ?string $nextCursor = null,
+    ): CursorPaginator {
         $query = User::query();
 
         foreach ($keywords as $keyword) {
@@ -45,11 +45,13 @@ final readonly class SearchUserAction
 
         return $query
             ->orderBy('id', 'desc')
-            ->limit($size)
             ->with([
                 'pets' => fn (HasMany $query) => $query
                     ->orderBy('id', 'desc'),
             ])
-            ->get();
+            ->cursorPaginate(
+                $size,
+                cursor: $nextCursor,
+            );
     }
 }
