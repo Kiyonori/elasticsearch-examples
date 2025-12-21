@@ -28,6 +28,11 @@ class IndexUsersRequest extends FormRequest
                 'int',
                 'min:1',
             ],
+
+            'next_cursor' => [
+                'nullable',
+                'string',
+            ],
         ];
     }
 }
