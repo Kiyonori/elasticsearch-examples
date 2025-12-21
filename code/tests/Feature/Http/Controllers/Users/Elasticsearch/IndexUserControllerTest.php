@@ -143,6 +143,11 @@ test(
                 key: 'data',
             )
             ->assertJsonStructure([
+                'response_time',
+                'hits_total',
+                'search_after_user_id',
+                'search_after_pet_id',
+
                 'data' => [
                     '*' => [
                         '_index',
@@ -173,8 +178,7 @@ test(
                         ],
                     ],
                 ],
-                'search_after_user_id',
-                'search_after_pet_id',
+
             ]);
     }
 );
