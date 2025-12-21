@@ -67,7 +67,7 @@ class IndexAllUsersCommand extends Command
                                 'pet_name'       => ($pet instanceof stdClass) ? null : $pet->name,
                                 'pet_breed'      => ($pet instanceof stdClass) ? null : $pet->breed?->breed,
                                 'pet_birth_date' => ($pet instanceof stdClass) ? null : $pet->birth_date?->format('Y-m-d'),
-                                'pets_count'     => ($pet instanceof stdClass) ? null : $pets->count(),
+                                'pets_count'     => ($pet instanceof stdClass) ? 0 : $pets->count(),
                                 'pet_created_at' => ($pet instanceof stdClass) ? null : $pet->created_at?->toIso8601String(),
                                 'pet_updated_at' => ($pet instanceof stdClass) ? null : $pet->updated_at?->toIso8601String(),
                             ];
