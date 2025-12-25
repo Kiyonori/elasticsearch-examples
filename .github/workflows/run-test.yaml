@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql-testing:
+      testing-mysql:
         image: mysql:8.0.41
         ports:
           - 3306:3306
@@ -47,8 +47,16 @@ jobs:
           php-version: '8.5'
           extensions: intl, zip
 
+      - uses: actions/checkout@v4
+      - name: Copy .env
+        run: |
+          cd code
+          php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
+
       - name: Validate composer.json and composer.lock
-        run: composer validate
+        run: |
+          cd code
+          composer validate
 
       - name: Cache Composer packages
         id: composer-cache
@@ -60,7 +68,16 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: |
+          cd code
+          composer install --prefer-dist --no-progress
+
+      - name: Wait for MySQL via localhost
+        run: |
+          for i in {1..30}; do
+            nc -z localhost 3306 && break
+            sleep 2
+          done
 
       - name: Wait for Elasticsearch via localhost
         run: |
@@ -73,25 +90,37 @@ jobs:
             sleep 2
           done
 
-      - uses: actions/checkout@v4
-      - name: Copy .env
-        run: php -r "file_exists('code/.env.testing') || copy('code/.env.testing.example', 'code/.env.testing');"
-
       - name: Replace elasticsearch host with localhost
-        run: sed -i 's#http://testing-elasticsearch:9200#http://localhost:9200#g' code/.env.testing
+        run: |
+          cd code
+          sed -i 's#http://testing-elasticsearch:9200#http://localhost:9200#g' .env.testing
 
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Generate key
-        run: php artisan key:generate
+        run: |
+          cd code
+          php artisan key:generate --env=testing
 
       - name: Directory Permissions
-        run: chmod -R 777 storage bootstrap/cache
+        run: |
+          cd code
+          chmod -R 777 storage bootstrap/cache
+
+      - name: Replace MySQL host with localhost
+        run: |
+          cd code
+          sed -i 's#testing-mysql#127.0.0.1#g' .env.testing
+
+      - name: Clear config cache
+        run: |
+          cd code
+          php artisan config:clear
 
       - name: Create Database
         run: |
-          php artisan migrate:refresh --env=testing
-          php artisan db:seed --class=Database\\Seeders\\Testing\\TestingSeeder --env=testing
+          cd code
+          php artisan --env=testing migrate:refresh
 
       - name: Run test suite
-        run: vendor/bin/pest
+        run: |
+          cd code
+          vendor/bin/pest
