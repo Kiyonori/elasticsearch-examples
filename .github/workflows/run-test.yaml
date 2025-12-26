@@ -1,0 +1,110 @@
+name: Run test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  run-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: code
+
+    services:
+      testing-mysql:
+        image: mysql:8.0.41
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: my_database
+          MYSQL_USER: database_user_name
+          MYSQL_PASSWORD: database_password
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      elasticsearch:
+        image: ghcr.io/kiyonori/elasticsearch-kuromoji:8.18.0
+        ports:
+          - 9200:9200
+        options: >-
+          --health-cmd "curl -fs http://localhost:9200/_cluster/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: false
+          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: intl, zip
+
+      - uses: actions/checkout@v4
+      - name: Copy .env
+        run: php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Wait for MySQL via localhost
+        run: |
+          for i in {1..30}; do
+            nc -z localhost 3306 && break
+            sleep 2
+          done
+
+      - name: Wait for Elasticsearch via localhost
+        run: |
+          echo "Waiting for Elasticsearch at localhost:9200..."
+          for i in {1..30}; do
+            if curl -s http://localhost:9200 | grep -q "tagline"; then
+              echo "Elasticsearch is up!"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Replace elasticsearch host with localhost
+        run: sed -i 's#http://testing-elasticsearch:9200#http://localhost:9200#g' .env.testing
+
+      - name: Generate key
+        run: php artisan key:generate --env=testing
+
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Replace MySQL host with localhost
+        run: sed -i 's#testing-mysql#127.0.0.1#g' .env.testing
+
+      - name: Clear config cache
+        run: php artisan config:clear
+
+      - name: Create Database
+        run: php artisan --env=testing migrate:refresh
+
+      - name: Run test suite
+        run: vendor/bin/pest
